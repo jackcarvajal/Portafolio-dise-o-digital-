@@ -1,0 +1,23 @@
+dental-portfolio/
+│
+├── index.html                    # Página principal (grid de pacientes)
+├── patient.html                  # Template de página individual
+├── css/
+│   └── styles.css               # Estilos globales
+├── js/
+│   └── patients-data.js         # BASE DE DATOS (solo editas aquí)
+├── patients/
+│   ├── patient-001/
+│   │   ├── cover.jpg            # Foto de portada
+│   │   ├── exocad.html          # Archivo interactivo Exocad
+│   │   └── gallery/             # Galería de imágenes
+│   │       ├── img-1.jpg
+│   │       ├── img-2.jpg
+│   │       └── img-3.jpg
+│   ├── patient-002/
+│   │   ├── cover.jpg
+│   │   ├── exocad.html
+│   │   └── gallery/
+│   └── patient-003/
+│       └── ...
+└── README.md
