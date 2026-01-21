@@ -1,23 +1,697 @@
-dental-portfolio/
-│
-├── index.html                    # Página principal (grid de pacientes)
-├── patient.html                  # Template de página individual
-├── css/
-│   └── styles.css               # Estilos globales
-├── js/
-│   └── patients-data.js         # BASE DE DATOS (solo editas aquí)
-├── patients/
-│   ├── patient-001/
-│   │   ├── cover.jpg            # Foto de portada
-│   │   ├── exocad.html          # Archivo interactivo Exocad
-│   │   └── gallery/             # Galería de imágenes
-│   │       ├── img-1.jpg
-│   │       ├── img-2.jpg
-│   │       └── img-3.jpg
-│   ├── patient-002/
-│   │   ├── cover.jpg
-│   │   ├── exocad.html
-│   │   └── gallery/
-│   └── patient-003/
-│       └── ...
-└── README.md
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio CAD/CAM Dental | Especialización en Exocad</title>
+    <meta name="description" content="Portafolio profesional de casos dentales digitales - Rehabilitación compleja, implantología y dispositivos ortopédicos">
+
+```
+<style>
+    :root {
+        --primary: #0ea5e9;
+        --primary-dark: #0284c7;
+        --secondary: #8b5cf6;
+        --accent: #10b981;
+        --bg-dark: #0a0e1a;
+        --bg-card: #151b2e;
+        --bg-card-hover: #1e2842;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --border: #1e293b;
+        --shadow: rgba(14, 165, 233, 0.15);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: var(--bg-dark);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    /* Header */
+    header {
+        background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-dark) 100%);
+        border-bottom: 1px solid var(--border);
+        padding: 2rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+    }
+
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        font-weight: 300;
+    }
+
+    /* Navigation */
+    nav {
+        margin-top: 2rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .nav-btn {
+        padding: 0.75rem 1.5rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    .nav-btn:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px var(--shadow);
+    }
+
+    .nav-btn.active {
+        background: var(--primary);
+        border-color: var(--primary);
+    }
+
+    /* Main Container */
+    main {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+    }
+
+    .section {
+        margin-bottom: 4rem;
+    }
+
+    .section-header {
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .section-description {
+        color: var(--text-secondary);
+        font-size: 1rem;
+    }
+
+    /* Grid */
+    .cases-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 2rem;
+    }
+
+    /* Case Card */
+    .case-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .case-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 60px var(--shadow);
+        border-color: var(--primary);
+    }
+
+    .case-image {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        font-size: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .case-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .case-card:hover .case-image img {
+        transform: scale(1.05);
+    }
+
+    .case-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .case-content {
+        padding: 1.5rem;
+    }
+
+    .case-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+    }
+
+    .case-description {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-bottom: 1.25rem;
+        line-height: 1.6;
+    }
+
+    .case-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+    }
+
+    .meta-icon {
+        width: 20px;
+        height: 20px;
+        background: var(--bg-dark);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+    }
+
+    /* Buttons */
+    .case-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 0.875rem 1.25rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px var(--shadow);
+    }
+
+    .btn-secondary {
+        background: var(--bg-dark);
+        color: var(--text-primary);
+        border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+        background: var(--bg-card-hover);
+        border-color: var(--secondary);
+    }
+
+    /* Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 14, 26, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 2000;
+        padding: 2rem;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 1200px;
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .modal-close {
+        background: var(--bg-dark);
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        transform: rotate(90deg);
+    }
+
+    .modal-body {
+        flex: 1;
+        overflow: auto;
+    }
+
+    .modal-iframe {
+        width: 100%;
+        height: 100%;
+        min-height: 600px;
+        border: none;
+    }
+
+    /* Loading */
+    .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid var(--border);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Footer */
+    footer {
+        background: var(--bg-card);
+        border-top: 1px solid var(--border);
+        padding: 2rem;
+        text-align: center;
+        color: var(--text-secondary);
+        margin-top: 4rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2rem;
+        }
+
+        .cases-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .modal {
+            padding: 1rem;
+        }
+
+        .modal-iframe {
+            min-height: 400px;
+        }
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-secondary);
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+</style>
+```
+
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🦷 Portafolio Digital CAD/CAM</h1>
+            <p class="subtitle">Especialización en Diseño Dental Asistido por Computadora | Exocad Professional</p>
+
+```
+        <nav>
+            <button class="nav-btn active" data-category="all">Todos los Casos</button>
+            <button class="nav-btn" data-category="rehabilitacion">Rehabilitación Compleja</button>
+            <button class="nav-btn" data-category="implantes">Barras e Implantes</button>
+            <button class="nav-btn" data-category="ferulas">Férulas y Dispositivos</button>
+        </nav>
+    </div>
+</header>
+
+<main id="main-content">
+    <!-- Las secciones se generarán dinámicamente -->
+</main>
+
+<div id="viewer-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modal-title">Visualizador 3D</h2>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <iframe id="modal-iframe" class="modal-iframe" src=""></iframe>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>Portafolio Profesional CAD/CAM Dental • Diseñado con tecnología web moderna</p>
+    <p style="margin-top: 0.5rem; font-size: 0.9rem;">Actualizado en 2025</p>
+</footer>
+
+<script>
+    // ============================================
+    // CONFIGURACIÓN DE DATOS - EDITA ESTA SECCIÓN
+    // ============================================
+    
+    const casesData = {
+        rehabilitacion: {
+            title: "Rehabilitación Compleja",
+            icon: "🔬",
+            description: "Casos de rehabilitación oral completa con tecnología CAD/CAM",
+            cases: [
+                {
+                    id: "rehab-001",
+                    title: "Rehabilitación Full Arch Superior",
+                    description: "Diseño de arcada completa con 14 unidades cerámicas sobre implantes. Workflow digital completo.",
+                    image: "assets/cases/images/rehab-001.jpg", // Reemplaza con tu imagen
+                    exocadFile: "assets/cases/exocad/rehab-001.html", // Reemplaza con tu archivo
+                    driveLink: "https://drive.google.com/file/d/TU_ID_AQUI/view", // Reemplaza con tu link
+                    material: "Zirconia",
+                    units: "14 unidades"
+                },
+                {
+                    id: "rehab-002",
+                    title: "Caso de Prótesis Híbrida",
+                    description: "Prótesis híbrida atornillada con estructura de titanio y recubrimiento estético en composite.",
+                    image: "assets/cases/images/rehab-002.jpg",
+                    exocadFile: "assets/cases/exocad/rehab-002.html",
+                    driveLink: "https://drive.google.com/file/d/TU_ID_AQUI/view",
+                    material: "Ti + Composite",
+                    units: "Arcada completa"
+                }
+            ]
+        },
+        implantes: {
+            title: "Barras e Implantes",
+            icon: "⚙️",
+            description: "Estructuras implantosoportadas y diseño de barras mecanizadas",
+            cases: [
+                {
+                    id: "impl-001",
+                    title: "Barra Multi-Unit de 6 Implantes",
+                    description: "Barra fresada en titanio grado 5 con conexiones multi-unit anguladas para sobredentadura.",
+                    image: "assets/cases/images/impl-001.jpg",
+                    exocadFile: "assets/cases/exocad/impl-001.html",
+                    driveLink: "https://drive.google.com/file/d/TU_ID_AQUI/view",
+                    material: "Titanio G5",
+                    units: "6 conexiones"
+                }
+            ]
+        },
+        ferulas: {
+            title: "Férulas y Dispositivos",
+            icon: "🛡️",
+            description: "Dispositivos de protección y ortopedia dental",
+            cases: [
+                {
+                    id: "fer-001",
+                    title: "Férula de Descarga Michigan",
+                    description: "Férula oclusal de tipo Michigan con ajuste digital preciso y guías caninas optimizadas.",
+                    image: "assets/cases/images/fer-001.jpg",
+                    exocadFile: "assets/cases/exocad/fer-001.html",
+                    driveLink: "https://drive.google.com/file/d/TU_ID_AQUI/view",
+                    material: "PMMA",
+                    units: "Arcada superior"
+                }
+            ]
+        }
+    };
+
+    // ============================================
+    // SISTEMA DE RENDERIZADO Y GESTIÓN
+    // ============================================
+
+    let currentCategory = 'all';
+
+    function renderCases() {
+        const mainContent = document.getElementById('main-content');
+        mainContent.innerHTML = '';
+
+        Object.entries(casesData).forEach(([categoryKey, categoryData]) => {
+            if (currentCategory !== 'all' && currentCategory !== categoryKey) return;
+
+            const section = document.createElement('section');
+            section.className = 'section';
+            section.dataset.category = categoryKey;
+
+            section.innerHTML = `
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-icon">${categoryData.icon}</span>
+                        ${categoryData.title}
+                    </h2>
+                    <p class="section-description">${categoryData.description}</p>
+                </div>
+                <div class="cases-grid" id="grid-${categoryKey}"></div>
+            `;
+
+            mainContent.appendChild(section);
+
+            const grid = document.getElementById(`grid-${categoryKey}`);
+            
+            if (categoryData.cases.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📁</div>
+                        <p>No hay casos disponibles en esta categoría</p>
+                    </div>
+                `;
+                return;
+            }
+
+            categoryData.cases.forEach(caseItem => {
+                const card = createCaseCard(caseItem, categoryKey);
+                grid.appendChild(card);
+            });
+        });
+    }
+
+    function createCaseCard(caseData, category) {
+        const card = document.createElement('div');
+        card.className = 'case-card';
+
+        const categoryLabels = {
+            rehabilitacion: 'Rehabilitación',
+            implantes: 'Implantes',
+            ferulas: 'Férulas'
+        };
+
+        card.innerHTML = `
+            <div class="case-image">
+                ${caseData.image ? 
+                    `<img src="${caseData.image}" alt="${caseData.title}" onerror="this.parentElement.innerHTML='🦷'">` : 
+                    '🦷'
+                }
+                <span class="case-badge">${categoryLabels[category]}</span>
+            </div>
+            <div class="case-content">
+                <h3 class="case-title">${caseData.title}</h3>
+                <p class="case-description">${caseData.description}</p>
+                <div class="case-meta">
+                    <div class="meta-item">
+                        <span class="meta-icon">💎</span>
+                        <span>${caseData.material}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">📐</span>
+                        <span>${caseData.units}</span>
+                    </div>
+                </div>
+                <div class="case-actions">
+                    <button class="btn btn-primary" onclick="openViewer('${caseData.exocadFile}', '${caseData.title}')">
+                        🔍 Ver Diseño 3D
+                    </button>
+                    <a class="btn btn-secondary" href="${caseData.driveLink}" target="_blank">
+                        💾 Descargar CAD
+                    </a>
+                </div>
+            </div>
+        `;
+
+        return card;
+    }
+
+    function openViewer(fileUrl, title) {
+        const modal = document.getElementById('viewer-modal');
+        const iframe = document.getElementById('modal-iframe');
+        const modalTitle = document.getElementById('modal-title');
+
+        modalTitle.textContent = title;
+        iframe.src = fileUrl;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('viewer-modal');
+        const iframe = document.getElementById('modal-iframe');
+
+        modal.classList.remove('active');
+        iframe.src = '';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+        renderCases();
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                renderCases();
+            });
+        });
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Cerrar modal al hacer click fuera
+        document.getElementById('viewer-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'viewer-modal') closeModal();
+        });
+    });
+</script>
+```
+
+</body>
+</html>
